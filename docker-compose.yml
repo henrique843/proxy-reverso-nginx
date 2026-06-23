@@ -1,0 +1,33 @@
+services:
+  proxy:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - frontend_net
+      - backend_net
+    depends_on:
+      - web1
+      - web2
+
+  web1:
+    image: nginxdemos/hello:plain-text
+    container_name: web1
+    networks:
+      - backend_net
+
+  web2:
+    image: nginxdemos/hello:plain-text
+    container_name: web2
+    networks:
+      - backend_net
+
+networks:
+  frontend_net:
+    driver: bridge
+  backend_net:
+    driver: bridge
+    internal: true
